@@ -28,6 +28,7 @@ namespace Daycare.WebAPIHost.ViewModels {
         public DateTime? RegisteredDate { get; set; }
 
         //View only
-       public DateTime? TargetDate { get; set; }
+        public DateTime? TargetDate { get; set; }
+        public bool? ActiveStatus { get; set; }
     }
 }

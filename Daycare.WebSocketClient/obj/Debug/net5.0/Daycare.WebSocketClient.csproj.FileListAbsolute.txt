@@ -1,0 +1,16 @@
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.exe
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.deps.json
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.runtimeconfig.json
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.runtimeconfig.dev.json
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.dll
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\ref\Daycare.WebSocketClient.dll
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\bin\Debug\net5.0\Daycare.WebSocketClient.pdb
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.csproj.AssemblyReference.cache
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.AssemblyInfoInputs.cache
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.AssemblyInfo.cs
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.csproj.CoreCompileInputs.cache
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.dll
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\ref\Daycare.WebSocketClient.dll
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.pdb
+C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocketClient\obj\Debug\net5.0\Daycare.WebSocketClient.genruntimeconfig.cache

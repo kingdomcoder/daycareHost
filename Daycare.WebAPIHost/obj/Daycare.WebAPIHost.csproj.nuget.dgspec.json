@@ -1,37 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj": {}
+    "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj": {}
   },
   "projects": {
-    "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj": {
+    "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj",
         "projectName": "Daycare.Domain",
-        "projectPath": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj",
-        "packagesPath": "C:\\Users\\YOzeki.AD.MTS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\obj\\",
+        "projectPath": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj",
+        "packagesPath": "C:\\Users\\administrator\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\YOzeki.AD.MTS\\Documents\\NuGet.Config",
-          "C:\\Users\\YOzeki.AD.MTS\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://www.nuget.org/api/v2/": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -43,6 +38,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
@@ -68,41 +64,36 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj": {
+    "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj",
+        "projectUniqueName": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj",
         "projectName": "Daycare.WebAPIHost",
-        "projectPath": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj",
-        "packagesPath": "C:\\Users\\YOzeki.AD.MTS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\obj\\",
+        "projectPath": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\Daycare.WebAPIHost.csproj",
+        "packagesPath": "C:\\Users\\administrator\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.WebAPIHost\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\YOzeki.AD.MTS\\Documents\\NuGet.Config",
-          "C:\\Users\\YOzeki.AD.MTS\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://www.nuget.org/api/v2/": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj": {
-                "projectPath": "C:\\Users\\YOzeki.AD.MTS\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj"
+              "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj": {
+                "projectPath": "C:\\Users\\administrator\\Documents\\Visual Studio 2019\\Projects\\Daycare\\Daycare.Domain\\Daycare.Domain.csproj"
               }
             }
           }
@@ -115,6 +106,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "EPPlus.Core": {
               "target": "Package",
@@ -155,7 +147,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

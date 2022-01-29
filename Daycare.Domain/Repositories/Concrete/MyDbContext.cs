@@ -1,4 +1,5 @@
 ﻿using Daycare.Domain.Entities.Daycare;
+using Daycare.Domain.Entities.Daycare.Chat;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Daycare.Domain.Repositories.Concrete {
         public DbSet<NapRecord> NapRecord { get; set; }
         public DbSet<PottyRecord> PottyRecord { get; set; }
         public DbSet<Organization> Organization { get; set; }
-
+        public DbSet<ChatUser> ChatUser { get; set; }
+        public DbSet<ChatMessage> ChatMessage { get; set; }
     }
 }

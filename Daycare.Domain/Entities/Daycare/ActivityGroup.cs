@@ -22,6 +22,7 @@ namespace Daycare.Domain.Entities.Daycare {
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
 
 
     public class Photo {

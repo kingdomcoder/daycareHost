@@ -1,4 +1,5 @@
 ﻿using Daycare.Domain.Entities;
+using Daycare.Domain.Entities.Daycare.Chat;
 using Daycare.Domain.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace Daycare.Domain.Repositories.Concrete {
 
         public class EFUserRepository : IUserRepository {
             private MyUserDbContext context;
+            private MyDbContext myContext;
             private readonly UserManager<ApplicationUser> _userManager;
 
-            public EFUserRepository(MyUserDbContext context, UserManager<ApplicationUser> userManager) {
+            public EFUserRepository(MyUserDbContext context, MyDbContext myContext, UserManager<ApplicationUser> userManager) {
                 this.context = context;
+            this.myContext = myContext;
                 this._userManager = userManager;
             }
 
@@ -155,6 +158,48 @@ namespace Daycare.Domain.Repositories.Concrete {
                     throw new Exception("Error at DeleteUserById: " + ex.Message);
                 }
             }
+
+        public IEnumerable<ChatUser> getChatUser(ApplicationUser model) {
+            throw new Exception();
+            //    try {
+        //        var result = (from table in context.User
+        //                      join chatMessage in myContext.ChatMessage
+        //                      on new {
+        //                          Id = table.Id,
+        //                          OrganizationId = table.OrganizationId
+        //                      } equals new {
+        //                          Id = chatMessage.Id,
+        //                          OrganizationId = chatMessage.OrganizationId
+        //                      } into ChatMessage_join
+        //                      from chatMessage_join in ChatMessage_join.DefaultIfEmpty()
+        //                      where
+        //                      (table.UserType != (model.UserType == "parent" ? "parent" : null)) &&
+        //                      (table.OrganizationId == model.OrganizationId)
+        //                      select new ChatUser() {
+        //                          Id = table.Id,
+        //                          Email = table.Email,
+        //                          FirstName = table.FirstName,
+        //                          LastName = table.LastName,
+        //                          UserType = table.UserType,
+        //                          OrganizationId = table.OrganizationId,
+        //                          LastMessageText =null,
+        //                          ImagePath=table.
+        //                      });
+        //        ;
+        //        .ToList();
+
+
+
+
+
+        //        return result;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+
         }
+
+
+    }
 
 }

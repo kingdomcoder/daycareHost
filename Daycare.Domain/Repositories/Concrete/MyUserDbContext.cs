@@ -1,4 +1,5 @@
 ﻿using Daycare.Domain.Entities;
+using Daycare.Domain.Entities.Daycare.Chat;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,7 +13,8 @@ namespace Daycare.Domain.Repositories.Concrete {
         public DbSet<Token> Token { get; set; }
         public DbSet<ApplicationUser> User { get; set; }  //....... MicrosoftAspNetCore.Identity.IdentityUser
 
-
+        public DbSet<ChatUser> ChatUser { get; set; }
+        public DbSet<ChatMessage> ChatMessage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             base.OnModelCreating(builder);

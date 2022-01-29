@@ -78,5 +78,8 @@ namespace Daycare.Domain.Entities {
         public string UserType { get; set; } //Organizer, Staff, Parent
         public DateTime? RegisteredDate { get; set; }
         public DateTime? LastAccessedDate { get; set; }
+
+        public string ImagePath { get; set; }
+        public string ImageFileName { get; set; }
     }
 }

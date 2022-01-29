@@ -16,6 +16,10 @@ namespace Daycare.Domain.Repositories.Abstract {
 
         IEnumerable<Child> getTheirChildrenByOrganization(Organization model);
 
+        IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByOrganization(Organization model);
+
+        IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByChildOrganization(Child model);
+
         // IEnumerable<Activity> GetChildActivityLogByChild(Child model, DateTime? date);
 
         void PostMessage(CommentRecord model);
@@ -25,5 +29,32 @@ namespace Daycare.Domain.Repositories.Abstract {
         Child GetChildByChildId(int id);
 
         IEnumerable<Activity> getActivityByChild(Child model);
+
+        AttendanceRecord getAttendanceOfTargetChild(AttendanceRecord model);
+
+       // AttendanceRecord updateAttendanceRecord(AttendanceRecord model);
+
+        AttendanceRecord updateAttendanceRecordIn(AttendanceRecord model);
+
+        AttendanceRecord updateAttendanceRecordOut(AttendanceRecord model);
+
+        AttendanceRecord updateAttendanceRecordTardy(AttendanceRecord model);
+
+        AttendanceRecord updateAttendanceRecordAbsent(AttendanceRecord model);
+
+        AttendanceRecord updateAttendanceRecordLeaveEarly(AttendanceRecord model);
+
+        void saveProfileFilePath(Child model);
+
+        AttendanceRecord saveTardyComment(AttendanceRecord model);
+
+        AttendanceRecord saveAbsentComment(AttendanceRecord model);
+
+        AttendanceRecord saveLeaveEarlyComment(AttendanceRecord model);
+
+        AttendanceRecord cancelSignIn(AttendanceRecord model);
+
+        AttendanceRecord cancelSignOut(AttendanceRecord model);
+
     }
 }

@@ -17,6 +17,8 @@ namespace Daycare.Domain.Entities.Daycare {
         public string ChildMyoji { get; set; }
         public string Gender { get; set; }
         public DateTime? DOB { get; set; }
+        public string ImagePath { get; set; }
+        public string ImageFileName { get; set; }
         public int? Grade { get; set; }
         public string ClassName { get; set; }
         public bool? AttendMon { get; set; }
@@ -29,5 +31,6 @@ namespace Daycare.Domain.Entities.Daycare {
         public DateTime? RegisteredDate { get;set; }
 
         public DateTime? TargetDate { get; set; }
+        public bool? ActiveStatus { get; set; }
     }
 }
