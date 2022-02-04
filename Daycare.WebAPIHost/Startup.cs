@@ -64,6 +64,10 @@ namespace Daycare.WebAPIHost {
             services.AddTransient<IUserRepository, EFUserRepository>();
             services.AddTransient<IChildService, ChildService>();
             services.AddTransient<IChildRepository, EFChildRepository>();
+
+            services.AddTransient<IAttendanceService,AttendanceService>();
+            services.AddTransient<IAttendanceRepository,EFAttendanceRepository>();
+           
             services.AddTransient<IRegistrationService, RegistrationService>();
             services.AddTransient<IRegistrationRepository, EFRegistrationRepository>();
             services.AddTransient<IMealService,MealService>();

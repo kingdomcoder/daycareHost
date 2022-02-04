@@ -77,6 +77,85 @@ namespace Daycare.Domain.Repositories.Concrete {
             }
         }
 
+        public IEnumerable<Child> GetMyChildrenByParentId(string id) {
+            try {
+                var children = (from table in context.Child
+                                where table.Parent1Id == id ||
+                                table.Parent2Id == id
+                                select table).ToList();
+                return children;
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public IEnumerable<Child> GetMyChildrenByParentUser(ApplicationUser model) {
+            try {
+                var children = (from table in context.Child
+                                where (table.Parent1Id == model.Id  ||
+                                table.Parent2Id == model.Id) &&
+                                table.OrganizationId == model.OrganizationId
+                                select table).ToList();
+                return children;
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public IEnumerable<Child> getTheirChildrenByOrganization(Organization model) {
+            try {
+                String strDayOfWeek = string.Empty;
+                // 1. Check day of the week for the target date
+                if (model.TargetDate != null) {
+                    DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
+                    strDayOfWeek = dateValue.ToString("ddd");
+                }
+                // 2. Check absent notice 
+                var children = (from table in context.Child
+                                where table.OrganizationId == model.OrganizationId &&
+                                table.ActiveStatus==true &&
+                                (strDayOfWeek == "Mon" ? table.AttendMon == true : null == null) &&
+                                (strDayOfWeek == "Tue" ? table.AttendTue == true : null == null) &&
+                                 (strDayOfWeek == "Wed" ? table.AttendWed == true : null == null) &&
+                                  (strDayOfWeek == "Thu" ? table.AttendThu == true : null == null) &&
+                                   (strDayOfWeek == "Fri" ? table.AttendFri == true : null == null) &&
+                                    (strDayOfWeek == "Sat" ? table.AttendSat == true : null == null) &&
+                                     (strDayOfWeek == "Sun" ? table.AttendSun == true : null == null)
+                                select table).ToList();
+                return children;
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void PostMessage(CommentRecord model) {
+            try {
+                CommentRecord dbEntry = (from table in context.CommentRecord
+                                 where
+                                 table.ChildId == model.ChildId
+                                 select table
+                  ).FirstOrDefault();
+
+                if (dbEntry == null || model.ChildId == null) {
+                    context.CommentRecord.Add(model);
+                    context.SaveChanges();
+                }
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public Child GetChildByChildId(int  id) {
+            try {
+                var child = (from table in context.Child
+                                where table.ChildId == id 
+                                select table).FirstOrDefault();
+                return child;
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public IEnumerable<Activity> getActivityByChild(Child model) {
             try {
                 List<Activity> logs = new List<Activity>();
@@ -460,243 +539,6 @@ namespace Daycare.Domain.Repositories.Concrete {
             }
         }
 
-        public IEnumerable<Child> GetMyChildrenByParentId(string id) {
-            try {
-                var children = (from table in context.Child
-                                where table.Parent1Id == id ||
-                                table.Parent2Id == id
-                                select table).ToList();
-                return children;
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public IEnumerable<Child> getTheirChildrenByOrganization(Organization model) {
-            try {
-                String strDayOfWeek = string.Empty;
-                // 1. Check day of the week for the target date
-                if (model.TargetDate != null) {
-                    DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
-                    strDayOfWeek = dateValue.ToString("ddd");
-                }
-                // 2. Check absent notice 
-                var children = (from table in context.Child
-                                where table.OrganizationId == model.OrganizationId &&
-                                table.ActiveStatus==true &&
-                                (strDayOfWeek == "Mon" ? table.AttendMon == true : null == null) &&
-                                (strDayOfWeek == "Tue" ? table.AttendTue == true : null == null) &&
-                                 (strDayOfWeek == "Wed" ? table.AttendWed == true : null == null) &&
-                                  (strDayOfWeek == "Thu" ? table.AttendThu == true : null == null) &&
-                                   (strDayOfWeek == "Fri" ? table.AttendFri == true : null == null) &&
-                                    (strDayOfWeek == "Sat" ? table.AttendSat == true : null == null) &&
-                                     (strDayOfWeek == "Sun" ? table.AttendSun == true : null == null)
-                                select table).ToList();
-                return children;
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByOrganization(Organization model) {
-            try {
-                String strDayOfWeek = string.Empty;
-                // 1. Check day of the week for the target date
-                if(model.TargetDate != null) {
-                    DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
-                    strDayOfWeek = dateValue.ToString("ddd");
-                }
-                var result = (from child in context.Child
-                              join attendanceRecord in context.AttendanceRecord
-                              on new {
-                                  OrganizationId = child.OrganizationId,
-                                  ChildId = child.ChildId
-                              } equals new {
-                                  OrganizationId = attendanceRecord.OrganizationId,
-                                  ChildId = attendanceRecord.ChildId ?? 0
-                              } into AttendanceRecord_join
-                              from attendanceRecord_join in AttendanceRecord_join.DefaultIfEmpty()
-                              where child.OrganizationId == model.OrganizationId &&
-                              child.ActiveStatus==true &&
-                                    (strDayOfWeek == "Mon" ? child.AttendMon == true : null == null) &&
-                                    (strDayOfWeek == "Tue" ? child.AttendTue == true : null == null) &&
-                                    (strDayOfWeek == "Wed" ? child.AttendWed == true : null == null) &&
-                                    (strDayOfWeek == "Thu" ? child.AttendThu == true : null == null) &&
-                                    (strDayOfWeek == "Fri" ? child.AttendFri == true : null == null) &&
-                                    (strDayOfWeek == "Sat" ? child.AttendSat == true : null == null) &&
-                                    (strDayOfWeek == "Sun" ? child.AttendSun == true : null == null)
-                              select new AttendanceRecord() {
-                                  AttendanceRecordId = attendanceRecord_join.AttendanceRecordId,
-                                  ChildId = child.ChildId,
-                                  OrganizationId = child.OrganizationId,
-                                  Parent1Id = child.Parent1Id,
-                                  Parent2Id = child.Parent2Id,
-                                  ChildFirstName = child.ChildFirstName,
-                                  ChildLastName = child.ChildLastName,
-                                  ImagePath = attendanceRecord_join.ImagePath,
-                                  ImageFileName = attendanceRecord_join.ImageFileName,
-                                  TargetDate = child.TargetDate,
-                                  InTime = attendanceRecord_join.InTime,
-                                  InTime_StampTime = attendanceRecord_join.InTime_StampTime,
-                                  InTime_EnteredBy = attendanceRecord_join.InTime_EnteredBy,
-                                  OutTime = attendanceRecord_join.OutTime,
-                                  OutTime_StampTime = attendanceRecord_join.OutTime_StampTime,
-                                  OutTime_EnteredBy = attendanceRecord_join.OutTime_EnteredBy,
-                                  Tardy = attendanceRecord_join.Tardy,
-                                  TardyComment = attendanceRecord_join.TardyComment,
-                                  Tardy_StampTime = attendanceRecord_join.Tardy_StampTime,
-                                  Tardy_EnteredBy = attendanceRecord_join.Tardy_EnteredBy,
-                                  Absent = attendanceRecord_join.Absent,
-                                  AbsentComment = attendanceRecord_join.AbsentComment,
-                                  Absent_StampTime = attendanceRecord_join.Absent_StampTime,
-                                  Absent_EnteredBy = attendanceRecord_join.Absent_EnteredBy,
-                                  LeaveEarly = attendanceRecord_join.LeaveEarly,
-                                  LeaveEarlyComment = attendanceRecord_join.LeaveEarlyComment,
-                                  LeaveEarly_StampTime = attendanceRecord_join.LeaveEarly_StampTime,
-                                  LeaveEarly_EnteredBy = attendanceRecord_join.LeaveEarly_EnteredBy,
-                                  CancelInTime_StampTime = attendanceRecord_join.CancelInTime_StampTime,
-                                  CancelInTime_EnteredBy = attendanceRecord_join.CancelInTime_EnteredBy,
-                                  CancelOutTime_StampTime = attendanceRecord_join.CancelOutTime_StampTime,
-                                  CancelOutTime_EnteredBy = attendanceRecord_join.CancelOutTime_EnteredBy,
-                              }).ToList();
-                return result;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-        
-
-        public IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByChildOrganization(Child model) {
-            try {
-                String strDayOfWeek = string.Empty;
-                // 1. Check day of the week for the target date
-                if(model.TargetDate != null) {
-                    DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
-                    strDayOfWeek = dateValue.ToString("ddd");
-                }
-                var result = (from child in context.Child
-                              join attendanceRecord in context.AttendanceRecord
-                              on new {
-                                  OrganizationId = child.OrganizationId,
-                                  ChildId = child.ChildId
-                              } equals new {
-                                  OrganizationId = attendanceRecord.OrganizationId,
-                                  ChildId = attendanceRecord.ChildId ?? 0
-                              } into AttendanceRecord_join
-                              from attendanceRecord_join in AttendanceRecord_join.DefaultIfEmpty()
-                              where 
-                              (child.OrganizationId == model.OrganizationId) &&
-                              ((model.ChildId==null || model.ChildId==0)?null==null:child.ChildId==model.ChildId) &&          
-                              child.ActiveStatus==true
-                                &&     
-                                ((strDayOfWeek == "Mon" ? child.AttendMon == true : null == null) &&
-                                (strDayOfWeek == "Tue" ? child.AttendTue == true : null == null) &&
-                                (strDayOfWeek == "Wed" ? child.AttendWed == true : null == null) &&
-                                (strDayOfWeek == "Thu" ? child.AttendThu == true : null == null) &&
-                                (strDayOfWeek == "Fri" ? child.AttendFri == true : null == null) &&
-                                (strDayOfWeek == "Sat" ? child.AttendSat == true : null == null) &&
-                                (strDayOfWeek == "Sun" ? child.AttendSun == true : null == null))
-
-                              select new AttendanceRecord() {
-                               //   AttendanceRecordId = attendanceRecord_join.AttendanceRecordId, //Need to delete becuae it should not be null
-                                  ChildId = child.ChildId,
-                                  OrganizationId = child.OrganizationId,
-                                  Parent1Id = child.Parent1Id,
-                                  Parent2Id = child.Parent2Id,
-                                  ChildFirstName = child.ChildFirstName,
-                                  ChildLastName = child.ChildLastName,
-                                  ImagePath = child.ImagePath,
-                                  ImageFileName = child.ImageFileName,
-                              }).ToList();
-
-                var query = (from g in result
-                             group g by new {
-                                 g.ChildId,
-                                 g.OrganizationId,
-                                 g.Parent1Id,
-                                 g.Parent2Id,
-                                 g.ChildFirstName,
-                                 g.ChildLastName,
-                                 g.ImagePath,
-                                 g.ImageFileName,
-                             }
-                            into grp
-                             select new AttendanceRecord() {
-                                 ChildId = grp.Key.ChildId,
-                                 OrganizationId = grp.Key.OrganizationId,
-                                 Parent1Id = grp.Key.Parent1Id,
-                                 Parent2Id = grp.Key.Parent2Id,
-                                 ChildFirstName = grp.Key.ChildFirstName,
-                                 ChildLastName = grp.Key.ChildLastName,
-                                 ImagePath = grp.Key.ImagePath,
-                                 ImageFileName = grp.Key.ImageFileName,
-                             }).ToList();
-                foreach(var obj in query) {
-                var result2 = (from attendanceRecord in context.AttendanceRecord
-                               where
-                               attendanceRecord.OrganizationId == obj.OrganizationId &&
-                               attendanceRecord.ChildId == obj.ChildId &&
-                               attendanceRecord.TargetDate == model.TargetDate
-                               select attendanceRecord).FirstOrDefault();
-                    if(result2!=null) {
-                        obj.InTime = result2.InTime;
-                        obj.InTime_StampTime = result2.InTime_StampTime;
-                        obj.InTime_EnteredBy = result2.InTime_EnteredBy;
-                        obj.OutTime = result2.OutTime;
-                        obj.OutTime_StampTime = result2.OutTime_StampTime;
-                        obj.OutTime_EnteredBy = result2.OutTime_EnteredBy;
-                        obj.Tardy = result2.Tardy;
-                        obj.TardyComment = result2.TardyComment;
-                        obj.Tardy_StampTime = result2.Tardy_StampTime;
-                        obj.Tardy_EnteredBy = result2.Tardy_EnteredBy;
-                        obj.Absent = result2.Absent;
-                        obj.AbsentComment = result2.AbsentComment;
-                        obj.Absent_StampTime = result2.Absent_StampTime;
-                        obj.Absent_EnteredBy = result2.Absent_EnteredBy;
-                        obj.LeaveEarly = result2.LeaveEarly;
-                        obj.LeaveEarlyComment = result2.LeaveEarlyComment;
-                        obj.LeaveEarly_StampTime = result2.LeaveEarly_StampTime;
-                        obj.LeaveEarly_EnteredBy = result2.LeaveEarly_EnteredBy;
-                        obj.CreatedDate = result2.CreatedDate;
-                        obj.UpdatedDate = result2.UpdatedDate;
-                    }
-                }
-                return query;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public IEnumerable<Child> GetMyChildrenByParentUser(ApplicationUser model) {
-            try {
-                var children = (from table in context.Child
-                                where (table.Parent1Id == model.Id  ||
-                                table.Parent2Id == model.Id) &&
-                                table.OrganizationId == model.OrganizationId
-                                select table).ToList();
-                return children;
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public void PostMessage(CommentRecord model) {
-            try {
-                CommentRecord dbEntry = (from table in context.CommentRecord
-                                 where
-                                 table.ChildId == model.ChildId
-                                 select table
-                  ).FirstOrDefault();
-
-                if (dbEntry == null || model.ChildId == null) {
-                    context.CommentRecord.Add(model);
-                    context.SaveChanges();
-                }
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void SendErrorMessageToAdmin(Child model, string message) {
             try {
 
@@ -704,179 +546,6 @@ namespace Daycare.Domain.Repositories.Concrete {
                 throw new Exception(ex.Message);
             }
         }
-
-        public Child GetChildByChildId(int  id) {
-            try {
-                var child = (from table in context.Child
-                                where table.ChildId == id 
-                                select table).FirstOrDefault();
-                return child;
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public AttendanceRecord getAttendanceOfTargetChild(AttendanceRecord model) {
-            try {
-                var result = (from table in context.AttendanceRecord
-                             where table.ChildId == model.ChildId &&
-                             table.OrganizationId == model.OrganizationId &&
-                             table.TargetDate == model.TargetDate
-                             select table).FirstOrDefault();
-                return result;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        //public AttendanceRecord updateAttendanceRecord(AttendanceRecord model) {
-        //    try {
-        //        //model.InTime = model.InTime == null ? null : TimeZoneInfo.ConvertTimeToUtc(DateTime);
-
-        //        var dbEntry = (from table in context.AttendanceRecord
-        //                      where table.ChildId == model.ChildId &&
-        //                      table.OrganizationId == model.OrganizationId &&
-        //                      table.TargetDate == model.TargetDate
-        //                      select table).FirstOrDefault();
-        //        if(dbEntry == null) {
-        //            context.AttendanceRecord.Add(model);
-        //            context.SaveChanges();
-        //        } else {
-        //            dbEntry.InTime = model.InTime;
-        //            dbEntry.RecordedDate = DateTime.Now;
-        //            context.Entry(dbEntry).State = EntityState.Modified;
-        //            context.SaveChanges();
-        //        }
-        //        return dbEntry;
-        //    } catch(Exception ex) {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
-
-        public AttendanceRecord updateAttendanceRecordIn(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry == null) {
-                    model.InTime            = model.InTime.Value.ToUniversalTime();
-                    model.InTime_StampTime  = model.InTime_StampTime.Value.ToUniversalTime();
-                    model.CreatedDate = model.CreatedDate; // DateTime.UtcNow;
-                    context.AttendanceRecord.Add(model);
-                    context.SaveChanges();
-                } else {
-                    dbEntry.InTime              = model.InTime.Value.ToUniversalTime();
-                    dbEntry.InTime_StampTime    = model.InTime_StampTime.Value.ToUniversalTime();
-                    dbEntry.InTime_EnteredBy    = model.InTime_EnteredBy;
-                    dbEntry.UpdatedDate = model.CreatedDate;// DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }   
-                return model;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public AttendanceRecord updateAttendanceRecordOut(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.OutTime             = model.OutTime.Value.ToUniversalTime();
-                    dbEntry.OutTime_StampTime   = model.OutTime_StampTime.Value.ToUniversalTime();
-                    dbEntry.OutTime_EnteredBy   = model.OutTime_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public AttendanceRecord updateAttendanceRecordTardy(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry == null) {
-                    model.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
-                    model.CreatedDate = model.CreatedDate;// DateTime.UtcNow;
-                    context.AttendanceRecord.Add(model);
-                    context.SaveChanges();
-                } else {
-                    dbEntry.Tardy = model.Tardy;
-                    dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
-                    dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return model;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public AttendanceRecord updateAttendanceRecordAbsent(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry == null) {
-                    model.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
-                    model.CreatedDate = model.CreatedDate;// DateTime.UtcNow; 
-                    context.AttendanceRecord.Add(model);
-                    context.SaveChanges();
-                } else {
-                    dbEntry.Absent = model.Absent;
-                    dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
-                    dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public AttendanceRecord updateAttendanceRecordLeaveEarly(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.LeaveEarly = model.LeaveEarly;
-                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
-                    dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        //    public IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByChildOrganization(Child model) {
-        //        throw new NotImplementedException();
-        //    }
 
         public void saveProfileFilePath(Child model) {
             try {
@@ -895,115 +564,432 @@ namespace Daycare.Domain.Repositories.Concrete {
             }
         }
 
-        public AttendanceRecord saveTardyComment(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.TardyComment = model.TardyComment;
-                    dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
-                    dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
+        //public IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByOrganization(Organization model) {
+        //    try {
+        //        String strDayOfWeek = string.Empty;
+        //        // 1. Check day of the week for the target date
+        //        if(model.TargetDate != null) {
+        //            DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
+        //            strDayOfWeek = dateValue.ToString("ddd");
+        //        }
+        //        var result = (from child in context.Child
+        //                      join attendanceRecord in context.AttendanceRecord
+        //                      on new {
+        //                          OrganizationId = child.OrganizationId,
+        //                          ChildId = child.ChildId
+        //                      } equals new {
+        //                          OrganizationId = attendanceRecord.OrganizationId,
+        //                          ChildId = attendanceRecord.ChildId ?? 0
+        //                      } into AttendanceRecord_join
+        //                      from attendanceRecord_join in AttendanceRecord_join.DefaultIfEmpty()
+        //                      where child.OrganizationId == model.OrganizationId &&
+        //                      child.ActiveStatus==true &&
+        //                            (strDayOfWeek == "Mon" ? child.AttendMon == true : null == null) &&
+        //                            (strDayOfWeek == "Tue" ? child.AttendTue == true : null == null) &&
+        //                            (strDayOfWeek == "Wed" ? child.AttendWed == true : null == null) &&
+        //                            (strDayOfWeek == "Thu" ? child.AttendThu == true : null == null) &&
+        //                            (strDayOfWeek == "Fri" ? child.AttendFri == true : null == null) &&
+        //                            (strDayOfWeek == "Sat" ? child.AttendSat == true : null == null) &&
+        //                            (strDayOfWeek == "Sun" ? child.AttendSun == true : null == null)
+        //                      select new AttendanceRecord() {
+        //                          AttendanceRecordId = attendanceRecord_join.AttendanceRecordId,
+        //                          ChildId = child.ChildId,
+        //                          OrganizationId = child.OrganizationId,
+        //                          Parent1Id = child.Parent1Id,
+        //                          Parent2Id = child.Parent2Id,
+        //                          ChildFirstName = child.ChildFirstName,
+        //                          ChildLastName = child.ChildLastName,
+        //                          ImagePath = attendanceRecord_join.ImagePath,
+        //                          ImageFileName = attendanceRecord_join.ImageFileName,
+        //                          TargetDate = child.TargetDate,
+        //                          InTime = attendanceRecord_join.InTime,
+        //                          InTime_StampTime = attendanceRecord_join.InTime_StampTime,
+        //                          InTime_EnteredBy = attendanceRecord_join.InTime_EnteredBy,
+        //                          OutTime = attendanceRecord_join.OutTime,
+        //                          OutTime_StampTime = attendanceRecord_join.OutTime_StampTime,
+        //                          OutTime_EnteredBy = attendanceRecord_join.OutTime_EnteredBy,
+        //                          Tardy = attendanceRecord_join.Tardy,
+        //                          TardyComment = attendanceRecord_join.TardyComment,
+        //                          Tardy_StampTime = attendanceRecord_join.Tardy_StampTime,
+        //                          Tardy_EnteredBy = attendanceRecord_join.Tardy_EnteredBy,
+        //                          Absent = attendanceRecord_join.Absent,
+        //                          AbsentComment = attendanceRecord_join.AbsentComment,
+        //                          Absent_StampTime = attendanceRecord_join.Absent_StampTime,
+        //                          Absent_EnteredBy = attendanceRecord_join.Absent_EnteredBy,
+        //                          LeaveEarly = attendanceRecord_join.LeaveEarly,
+        //                          LeaveEarlyComment = attendanceRecord_join.LeaveEarlyComment,
+        //                          LeaveEarly_StampTime = attendanceRecord_join.LeaveEarly_StampTime,
+        //                          LeaveEarly_EnteredBy = attendanceRecord_join.LeaveEarly_EnteredBy,
+        //                          CancelInTime_StampTime = attendanceRecord_join.CancelInTime_StampTime,
+        //                          CancelInTime_EnteredBy = attendanceRecord_join.CancelInTime_EnteredBy,
+        //                          CancelOutTime_StampTime = attendanceRecord_join.CancelOutTime_StampTime,
+        //                          CancelOutTime_EnteredBy = attendanceRecord_join.CancelOutTime_EnteredBy,
+        //                      }).ToList();
+        //        return result;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
-        public AttendanceRecord saveAbsentComment(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.AbsentComment = model.AbsentComment;
-                    dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
-                    dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
-                    dbEntry.UpdatedDate =  model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
+        //public IEnumerable<AttendanceRecord> getTheirChildrenAttendanceRecordByChildOrganization(Child model) {
+        //    try {
+        //        String strDayOfWeek = string.Empty;
+        //        // 1. Check day of the week for the target date
+        //        if(model.TargetDate != null) {
+        //            DateTime dateValue = DateTime.Parse(model.TargetDate.Value.ToString());
+        //            strDayOfWeek = dateValue.ToString("ddd");
+        //        }
+        //        var result = (from child in context.Child
+        //                      join attendanceRecord in context.AttendanceRecord
+        //                      on new {
+        //                          OrganizationId = child.OrganizationId,
+        //                          ChildId = child.ChildId
+        //                      } equals new {
+        //                          OrganizationId = attendanceRecord.OrganizationId,
+        //                          ChildId = attendanceRecord.ChildId ?? 0
+        //                      } into AttendanceRecord_join
+        //                      from attendanceRecord_join in AttendanceRecord_join.DefaultIfEmpty()
+        //                      where 
+        //                      (child.OrganizationId == model.OrganizationId) &&
+        //                      ((model.ChildId==null || model.ChildId==0)?null==null:child.ChildId==model.ChildId) &&          
+        //                      child.ActiveStatus==true
+        //                        &&     
+        //                        ((strDayOfWeek == "Mon" ? child.AttendMon == true : null == null) &&
+        //                        (strDayOfWeek == "Tue" ? child.AttendTue == true : null == null) &&
+        //                        (strDayOfWeek == "Wed" ? child.AttendWed == true : null == null) &&
+        //                        (strDayOfWeek == "Thu" ? child.AttendThu == true : null == null) &&
+        //                        (strDayOfWeek == "Fri" ? child.AttendFri == true : null == null) &&
+        //                        (strDayOfWeek == "Sat" ? child.AttendSat == true : null == null) &&
+        //                        (strDayOfWeek == "Sun" ? child.AttendSun == true : null == null))
 
-        public AttendanceRecord saveLeaveEarlyComment(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.LeaveEarlyComment = model.LeaveEarlyComment;
-                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
-                    dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
+        //                      select new AttendanceRecord() {
+        //                       //   AttendanceRecordId = attendanceRecord_join.AttendanceRecordId, //Need to delete becuae it should not be null
+        //                          ChildId = child.ChildId,
+        //                          OrganizationId = child.OrganizationId,
+        //                          Parent1Id = child.Parent1Id,
+        //                          Parent2Id = child.Parent2Id,
+        //                          ChildFirstName = child.ChildFirstName,
+        //                          ChildLastName = child.ChildLastName,
+        //                          ImagePath = child.ImagePath,
+        //                          ImageFileName = child.ImageFileName,
+        //                      }).ToList();
 
-        public AttendanceRecord cancelSignIn(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.InTime = null;
-                    dbEntry.InTime_StampTime = null;
-                    dbEntry.InTime_EnteredBy = null;
-                    dbEntry.CancelInTime_StampTime = model.CancelInTime_StampTime;
-                    dbEntry.CancelInTime_EnteredBy = model.CancelInTime_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
+        //        var query = (from g in result
+        //                     group g by new {
+        //                         g.ChildId,
+        //                         g.OrganizationId,
+        //                         g.Parent1Id,
+        //                         g.Parent2Id,
+        //                         g.ChildFirstName,
+        //                         g.ChildLastName,
+        //                         g.ImagePath,
+        //                         g.ImageFileName,
+        //                     }
+        //                    into grp
+        //                     select new AttendanceRecord() {
+        //                         ChildId = grp.Key.ChildId,
+        //                         OrganizationId = grp.Key.OrganizationId,
+        //                         Parent1Id = grp.Key.Parent1Id,
+        //                         Parent2Id = grp.Key.Parent2Id,
+        //                         ChildFirstName = grp.Key.ChildFirstName,
+        //                         ChildLastName = grp.Key.ChildLastName,
+        //                         ImagePath = grp.Key.ImagePath,
+        //                         ImageFileName = grp.Key.ImageFileName,
+        //                     }).ToList();
+        //        foreach(var obj in query) {
+        //        var result2 = (from attendanceRecord in context.AttendanceRecord
+        //                       where
+        //                       attendanceRecord.OrganizationId == obj.OrganizationId &&
+        //                       attendanceRecord.ChildId == obj.ChildId &&
+        //                       attendanceRecord.TargetDate == model.TargetDate
+        //                       select attendanceRecord).FirstOrDefault();
+        //            if(result2!=null) {
+        //                obj.InTime = result2.InTime;
+        //                obj.InTime_StampTime = result2.InTime_StampTime;
+        //                obj.InTime_EnteredBy = result2.InTime_EnteredBy;
+        //                obj.OutTime = result2.OutTime;
+        //                obj.OutTime_StampTime = result2.OutTime_StampTime;
+        //                obj.OutTime_EnteredBy = result2.OutTime_EnteredBy;
+        //                obj.Tardy = result2.Tardy;
+        //                obj.TardyComment = result2.TardyComment;
+        //                obj.Tardy_StampTime = result2.Tardy_StampTime;
+        //                obj.Tardy_EnteredBy = result2.Tardy_EnteredBy;
+        //                obj.Absent = result2.Absent;
+        //                obj.AbsentComment = result2.AbsentComment;
+        //                obj.Absent_StampTime = result2.Absent_StampTime;
+        //                obj.Absent_EnteredBy = result2.Absent_EnteredBy;
+        //                obj.LeaveEarly = result2.LeaveEarly;
+        //                obj.LeaveEarlyComment = result2.LeaveEarlyComment;
+        //                obj.LeaveEarly_StampTime = result2.LeaveEarly_StampTime;
+        //                obj.LeaveEarly_EnteredBy = result2.LeaveEarly_EnteredBy;
+        //                obj.CreatedDate = result2.CreatedDate;
+        //                obj.UpdatedDate = result2.UpdatedDate;
+        //            }
+        //        }
+        //        return query;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
-        public AttendanceRecord cancelSignOut(AttendanceRecord model) {
-            try {
-                var dbEntry = (from table in context.AttendanceRecord
-                               where table.ChildId == model.ChildId &&
-                               table.OrganizationId == model.OrganizationId &&
-                               table.TargetDate == model.TargetDate
-                               select table).FirstOrDefault();
-                if(dbEntry != null) {
-                    dbEntry.OutTime = null;
-                    dbEntry.OutTime_StampTime = null;
-                    dbEntry.OutTime_EnteredBy = null;
-                    dbEntry.CancelOutTime_StampTime = model.CancelOutTime_StampTime;
-                    dbEntry.CancelOutTime_EnteredBy = model.CancelOutTime_EnteredBy;
-                    dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
-                    context.Entry(dbEntry).State = EntityState.Modified;
-                    context.SaveChanges();
-                }
-                return dbEntry;
-            } catch(Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
+        //public AttendanceRecord getAttendanceOfTargetChild(AttendanceRecord model) {
+        //    try {
+        //        var result = (from table in context.AttendanceRecord
+        //                     where table.ChildId == model.ChildId &&
+        //                     table.OrganizationId == model.OrganizationId &&
+        //                     table.TargetDate == model.TargetDate
+        //                     select table).FirstOrDefault();
+        //        return result;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
+        //public AttendanceRecord updateAttendanceRecordIn(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry == null) {
+        //            model.InTime            = model.InTime.Value.ToUniversalTime();
+        //            model.InTime_StampTime  = model.InTime_StampTime.Value.ToUniversalTime();
+        //            model.CreatedDate = model.CreatedDate; // DateTime.UtcNow;
+        //            context.AttendanceRecord.Add(model);
+        //            context.SaveChanges();
+        //        } else {
+        //            dbEntry.InTime              = model.InTime.Value.ToUniversalTime();
+        //            dbEntry.InTime_StampTime    = model.InTime_StampTime.Value.ToUniversalTime();
+        //            dbEntry.InTime_EnteredBy    = model.InTime_EnteredBy;
+        //            dbEntry.UpdatedDate = model.CreatedDate;// DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }   
+        //        return model;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
 
+        //public AttendanceRecord updateAttendanceRecordOut(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.OutTime             = model.OutTime.Value.ToUniversalTime();
+        //            dbEntry.OutTime_StampTime   = model.OutTime_StampTime.Value.ToUniversalTime();
+        //            dbEntry.OutTime_EnteredBy   = model.OutTime_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord updateAttendanceRecordTardy(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry == null) {
+        //            model.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+        //            model.CreatedDate = model.CreatedDate;// DateTime.UtcNow;
+        //            context.AttendanceRecord.Add(model);
+        //            context.SaveChanges();
+        //        } else {
+        //            dbEntry.Tardy = model.Tardy;
+        //            dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+        //            dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return model;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord updateAttendanceRecordAbsent(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry == null) {
+        //            model.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+        //            model.CreatedDate = model.CreatedDate;// DateTime.UtcNow; 
+        //            context.AttendanceRecord.Add(model);
+        //            context.SaveChanges();
+        //        } else {
+        //            dbEntry.Absent = model.Absent;
+        //            dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+        //            dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord updateAttendanceRecordLeaveEarly(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.LeaveEarly = model.LeaveEarly;
+        //            dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
+        //            dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public void saveProfileFilePath(Child model) {
+        //    try {
+        //        var dbEntry = (from table in context.Child
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.ImagePath = model.ImagePath;
+        //            dbEntry.ImageFileName = model.ImageFileName;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord saveTardyComment(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.TardyComment = model.TardyComment;
+        //            dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+        //            dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord saveAbsentComment(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.AbsentComment = model.AbsentComment;
+        //            dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+        //            dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
+        //            dbEntry.UpdatedDate =  model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord saveLeaveEarlyComment(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.LeaveEarlyComment = model.LeaveEarlyComment;
+        //            dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
+        //            dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord cancelSignIn(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.InTime = null;
+        //            dbEntry.InTime_StampTime = null;
+        //            dbEntry.InTime_EnteredBy = null;
+        //            dbEntry.CancelInTime_StampTime = model.CancelInTime_StampTime;
+        //            dbEntry.CancelInTime_EnteredBy = model.CancelInTime_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
+
+        //public AttendanceRecord cancelSignOut(AttendanceRecord model) {
+        //    try {
+        //        var dbEntry = (from table in context.AttendanceRecord
+        //                       where table.ChildId == model.ChildId &&
+        //                       table.OrganizationId == model.OrganizationId &&
+        //                       table.TargetDate == model.TargetDate
+        //                       select table).FirstOrDefault();
+        //        if(dbEntry != null) {
+        //            dbEntry.OutTime = null;
+        //            dbEntry.OutTime_StampTime = null;
+        //            dbEntry.OutTime_EnteredBy = null;
+        //            dbEntry.CancelOutTime_StampTime = model.CancelOutTime_StampTime;
+        //            dbEntry.CancelOutTime_EnteredBy = model.CancelOutTime_EnteredBy;
+        //            dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
+        //            context.Entry(dbEntry).State = EntityState.Modified;
+        //            context.SaveChanges();
+        //        }
+        //        return dbEntry;
+        //    } catch(Exception ex) {
+        //        throw new Exception(ex.Message);
+        //    }
+        //}
     }
 }

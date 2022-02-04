@@ -329,7 +329,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                         dbEntry.FifthCreatedDate = model.CreatedDate;
                         dbEntry.FifthCreatedBy = model.CreatedBy;
                     }
-                    dbEntry.UpdatedDate = DateTime.UtcNow;
+                    dbEntry.UpdatedDate = DateTime.Now;// DateTime.UtcNow;
                     dbEntry.UpdatedBy = model.UpdatedBy;
                     context.Entry(dbEntry).State = EntityState.Modified;
                     context.SaveChanges();
