@@ -21,5 +21,7 @@ namespace Daycare.Domain.Repositories.Concrete {
         public DbSet<Organization> Organization { get; set; }
         public DbSet<ChatUser> ChatUser { get; set; }
         public DbSet<ChatMessage> ChatMessage { get; set; }
+        public DbSet<DeviceToken> DeviceToken { get; set; }
+        public DbSet<Photo> Photo { get; set; }
     }
 }

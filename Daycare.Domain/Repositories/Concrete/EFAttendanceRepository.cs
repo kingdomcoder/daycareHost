@@ -618,14 +618,14 @@ namespace Daycare.Domain.Repositories.Concrete {
                                table.TargetDate == model.TargetDate
                                select table).FirstOrDefault();
                 if(dbEntry == null) {
-                    model.InTime = model.InTime.Value.ToUniversalTime();
-                    model.InTime_StampTime = model.InTime_StampTime.Value.ToUniversalTime();
+                    //model.InTime = model.InTime.Value.ToUniversalTime();
+                    //model.InTime_StampTime = model.InTime_StampTime.Value.ToUniversalTime();
                     model.CreatedDate = model.CreatedDate; // DateTime.UtcNow;
                     context.AttendanceRecord.Add(model);
                     context.SaveChanges();
                 } else {
-                    dbEntry.InTime = model.InTime.Value.ToUniversalTime();
-                    dbEntry.InTime_StampTime = model.InTime_StampTime.Value.ToUniversalTime();
+                    dbEntry.InTime = model.InTime;//.Value.ToUniversalTime();
+                    dbEntry.InTime_StampTime = model.InTime_StampTime;//.Value.ToUniversalTime();
                     dbEntry.InTime_EnteredBy = model.InTime_EnteredBy;
                     dbEntry.UpdatedDate = model.CreatedDate;// DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -645,8 +645,10 @@ namespace Daycare.Domain.Repositories.Concrete {
                                table.TargetDate == model.TargetDate
                                select table).FirstOrDefault();
                 if(dbEntry != null) {
-                    dbEntry.OutTime = model.OutTime.Value.ToUniversalTime();
-                    dbEntry.OutTime_StampTime = model.OutTime_StampTime.Value.ToUniversalTime();
+                    //dbEntry.OutTime = model.OutTime.Value.ToUniversalTime();
+                    //dbEntry.OutTime_StampTime = model.OutTime_StampTime.Value.ToUniversalTime();
+                    dbEntry.OutTime = model.OutTime;
+                    dbEntry.OutTime_StampTime = model.OutTime_StampTime;
                     dbEntry.OutTime_EnteredBy = model.OutTime_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -666,13 +668,13 @@ namespace Daycare.Domain.Repositories.Concrete {
                                table.TargetDate == model.TargetDate
                                select table).FirstOrDefault();
                 if(dbEntry == null) {
-                    model.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+                    model.Tardy_StampTime = model.Tardy_StampTime; //.Value.ToUniversalTime();
                     model.CreatedDate = model.CreatedDate;// DateTime.UtcNow;
                     context.AttendanceRecord.Add(model);
                     context.SaveChanges();
                 } else {
                     dbEntry.Tardy = model.Tardy;
-                    dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+                    dbEntry.Tardy_StampTime = model.Tardy_StampTime;//.Value.ToUniversalTime();
                     dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -692,13 +694,13 @@ namespace Daycare.Domain.Repositories.Concrete {
                                table.TargetDate == model.TargetDate
                                select table).FirstOrDefault();
                 if(dbEntry == null) {
-                    model.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+                    model.Absent_StampTime = model.Absent_StampTime;//.Value.ToUniversalTime();
                     model.CreatedDate = model.CreatedDate;// DateTime.UtcNow; 
                     context.AttendanceRecord.Add(model);
                     context.SaveChanges();
                 } else {
                     dbEntry.Absent = model.Absent;
-                    dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+                    dbEntry.Absent_StampTime = model.Absent_StampTime; //.Value.ToUniversalTime();
                     dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate;// DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -719,7 +721,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                                select table).FirstOrDefault();
                 if(dbEntry != null) {
                     dbEntry.LeaveEarly = model.LeaveEarly;
-                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
+                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime; //.Value.ToUniversalTime();
                     dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -740,7 +742,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                                select table).FirstOrDefault();
                 if(dbEntry != null) {
                     dbEntry.TardyComment = model.TardyComment;
-                    dbEntry.Tardy_StampTime = model.Tardy_StampTime.Value.ToUniversalTime();
+                    dbEntry.Tardy_StampTime = model.Tardy_StampTime; //.Value.ToUniversalTime();
                     dbEntry.Tardy_EnteredBy = model.Tardy_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -761,7 +763,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                                select table).FirstOrDefault();
                 if(dbEntry != null) {
                     dbEntry.AbsentComment = model.AbsentComment;
-                    dbEntry.Absent_StampTime = model.Absent_StampTime.Value.ToUniversalTime();
+                    dbEntry.Absent_StampTime = model.Absent_StampTime; //.Value.ToUniversalTime();
                     dbEntry.Absent_EnteredBy = model.Absent_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;
@@ -782,7 +784,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                                select table).FirstOrDefault();
                 if(dbEntry != null) {
                     dbEntry.LeaveEarlyComment = model.LeaveEarlyComment;
-                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime.Value.ToUniversalTime();
+                    dbEntry.LeaveEarly_StampTime = model.LeaveEarly_StampTime; //.Value.ToUniversalTime();
                     dbEntry.LeaveEarly_EnteredBy = model.LeaveEarly_EnteredBy;
                     dbEntry.UpdatedDate = model.UpdatedDate; //DateTime.UtcNow;
                     context.Entry(dbEntry).State = EntityState.Modified;

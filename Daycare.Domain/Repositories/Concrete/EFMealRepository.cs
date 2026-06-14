@@ -324,48 +324,100 @@ namespace Daycare.Domain.Repositories.Concrete {
                     context.MealRecord.Add(model);
                     context.SaveChanges();
                 } else {
-                    dbEntry.Breakfast = model.Breakfast;
-                    dbEntry.BreakfastQuantity = model.BreakfastQuantity;
-                    dbEntry.BreakfastDescription = model.BreakfastDescription;
-                    dbEntry.BreakfastVisibleToStaffOnly = model.BreakfastVisibleToStaffOnly;
-                    dbEntry.BreakfastCreatedDate = model.BreakfastCreatedDate;
-                    dbEntry.BreakfastCreatedBy = model.BreakfastCreatedBy;
 
-                    dbEntry.AMSnack = model.AMSnack;
-                    dbEntry.AMSnackQuantity = model.AMSnackQuantity;
-                    dbEntry.AMSnackDescription = model.AMSnackDescription;
-                    dbEntry.AMSnackVisibleToStaffOnly = model.AMSnackVisibleToStaffOnly;
-                    dbEntry.AMSnackCreatedDate = model.AMSnackCreatedDate;
-                    dbEntry.AMSnackCreatedBy = model.AMSnackCreatedBy;
 
-                    dbEntry.Lunch = model.Lunch;
-                    dbEntry.LunchQuantity = model.LunchQuantity;
-                    dbEntry.LunchDescription = model.LunchDescription;
-                    dbEntry.LunchVisibleToStaffOnly = model.LunchVisibleToStaffOnly;
-                    dbEntry.LunchCreatedDate = model.LunchCreatedDate;
-                    dbEntry.LunchCreatedBy = model.LunchCreatedBy;
+                    //dbEntry.Breakfast = model.Breakfast;
+                    //dbEntry.BreakfastQuantity = model.BreakfastQuantity;
+                    //dbEntry.BreakfastDescription = model.BreakfastDescription;
+                    //dbEntry.BreakfastVisibleToStaffOnly = model.BreakfastVisibleToStaffOnly;
+                    //dbEntry.BreakfastCreatedDate = model.BreakfastCreatedDate;
+                    //dbEntry.BreakfastCreatedBy = model.BreakfastCreatedBy;
 
-                    dbEntry.PMSnack = model.PMSnack;
-                    dbEntry.PMSnackQuantity = model.PMSnackQuantity;
-                    dbEntry.PMSnackDescription = model.PMSnackDescription;
-                    dbEntry.PMSnackVisibleToStaffOnly = model.PMSnackVisibleToStaffOnly;
-                    dbEntry.PMSnackCreatedDate = model.PMSnackCreatedDate;
-                    dbEntry.PMSnackCreatedBy = model.PMSnackCreatedBy;
+                    //dbEntry.AMSnack = model.AMSnack;
+                    //dbEntry.AMSnackQuantity = model.AMSnackQuantity;
+                    //dbEntry.AMSnackDescription = model.AMSnackDescription;
+                    //dbEntry.AMSnackVisibleToStaffOnly = model.AMSnackVisibleToStaffOnly;
+                    //dbEntry.AMSnackCreatedDate = model.AMSnackCreatedDate;
+                    //dbEntry.AMSnackCreatedBy = model.AMSnackCreatedBy;
 
-                    dbEntry.LateSnack = model.LateSnack;
-                    dbEntry.LateSnackQuantity = model.LateSnackQuantity;
-                    dbEntry.LateSnackDescription = model.LateSnackDescription;
-                    dbEntry.LateSnackVisibleToStaffOnly = model.LateSnackVisibleToStaffOnly;
-                    dbEntry.LateSnackCreatedDate = model.LateSnackCreatedDate;
-                    dbEntry.LateSnackCreatedBy = model.LateSnackCreatedBy;
+                    //dbEntry.Lunch = model.Lunch;
+                    //dbEntry.LunchQuantity = model.LunchQuantity;
+                    //dbEntry.LunchDescription = model.LunchDescription;
+                    //dbEntry.LunchVisibleToStaffOnly = model.LunchVisibleToStaffOnly;
+                    //dbEntry.LunchCreatedDate = model.LunchCreatedDate;
+                    //dbEntry.LunchCreatedBy = model.LunchCreatedBy;
 
-                    dbEntry.Dinner = model.Dinner;
-                    dbEntry.DinnerQuantity = model.DinnerQuantity;
-                    dbEntry.DinnerDescription = model.DinnerDescription;
-                    dbEntry.DinnerVisibleToStaffOnly = model.DinnerVisibleToStaffOnly;
-                    dbEntry.DinnerCreatedDate = model.DinnerCreatedDate;
-                    dbEntry.DinnerCreatedBy = model.DinnerCreatedBy;
+                    //dbEntry.PMSnack = model.PMSnack;
+                    //dbEntry.PMSnackQuantity = model.PMSnackQuantity;
+                    //dbEntry.PMSnackDescription = model.PMSnackDescription;
+                    //dbEntry.PMSnackVisibleToStaffOnly = model.PMSnackVisibleToStaffOnly;
+                    //dbEntry.PMSnackCreatedDate = model.PMSnackCreatedDate;
+                    //dbEntry.PMSnackCreatedBy = model.PMSnackCreatedBy;
 
+                    //dbEntry.LateSnack = model.LateSnack;
+                    //dbEntry.LateSnackQuantity = model.LateSnackQuantity;
+                    //dbEntry.LateSnackDescription = model.LateSnackDescription;
+                    //dbEntry.LateSnackVisibleToStaffOnly = model.LateSnackVisibleToStaffOnly;
+                    //dbEntry.LateSnackCreatedDate = model.LateSnackCreatedDate;
+                    //dbEntry.LateSnackCreatedBy = model.LateSnackCreatedBy;
+
+                    //dbEntry.Dinner = model.Dinner;
+                    //dbEntry.DinnerQuantity = model.DinnerQuantity;
+                    //dbEntry.DinnerDescription = model.DinnerDescription;
+                    //dbEntry.DinnerVisibleToStaffOnly = model.DinnerVisibleToStaffOnly;
+                    //dbEntry.DinnerCreatedDate = model.DinnerCreatedDate;
+                    //dbEntry.DinnerCreatedBy = model.DinnerCreatedBy;
+
+                    switch (model.MealType) {
+                        case "Breakfast":
+                            dbEntry.Breakfast = model.Breakfast;
+                            dbEntry.BreakfastQuantity = model.BreakfastQuantity;
+                            dbEntry.BreakfastDescription = model.BreakfastDescription;
+                            dbEntry.BreakfastVisibleToStaffOnly = model.BreakfastVisibleToStaffOnly;
+                            dbEntry.BreakfastCreatedDate = model.BreakfastCreatedDate;
+                            dbEntry.BreakfastCreatedBy = model.BreakfastCreatedBy;
+                            break;
+                        case "AM Snack":
+                            dbEntry.AMSnack = model.AMSnack;
+                            dbEntry.AMSnackQuantity = model.AMSnackQuantity;
+                            dbEntry.AMSnackDescription = model.AMSnackDescription;
+                            dbEntry.AMSnackVisibleToStaffOnly = model.AMSnackVisibleToStaffOnly;
+                            dbEntry.AMSnackCreatedDate = model.AMSnackCreatedDate;
+                            dbEntry.AMSnackCreatedBy = model.AMSnackCreatedBy;
+                            break;
+                        case "Lunch":
+                            dbEntry.Lunch = model.Lunch;
+                            dbEntry.LunchQuantity = model.LunchQuantity;
+                            dbEntry.LunchDescription = model.LunchDescription;
+                            dbEntry.LunchVisibleToStaffOnly = model.LunchVisibleToStaffOnly;
+                            dbEntry.LunchCreatedDate = model.LunchCreatedDate;
+                            dbEntry.LunchCreatedBy = model.LunchCreatedBy;
+                            break;
+                        case "PM Snack":
+                            dbEntry.PMSnack = model.PMSnack;
+                            dbEntry.PMSnackQuantity = model.PMSnackQuantity;
+                            dbEntry.PMSnackDescription = model.PMSnackDescription;
+                            dbEntry.PMSnackVisibleToStaffOnly = model.PMSnackVisibleToStaffOnly;
+                            dbEntry.PMSnackCreatedDate = model.PMSnackCreatedDate;
+                            dbEntry.PMSnackCreatedBy = model.PMSnackCreatedBy;
+                            break;
+                        case "Late Snack":
+                            dbEntry.LateSnack = model.LateSnack;
+                            dbEntry.LateSnackQuantity = model.LateSnackQuantity;
+                            dbEntry.LateSnackDescription = model.LateSnackDescription;
+                            dbEntry.LateSnackVisibleToStaffOnly = model.LateSnackVisibleToStaffOnly;
+                            dbEntry.LateSnackCreatedDate = model.LateSnackCreatedDate;
+                            dbEntry.LateSnackCreatedBy = model.LateSnackCreatedBy;
+                            break;
+                        case "Dinner":
+                            dbEntry.Dinner = model.Dinner;
+                            dbEntry.DinnerQuantity = model.DinnerQuantity;
+                            dbEntry.DinnerDescription = model.DinnerDescription;
+                            dbEntry.DinnerVisibleToStaffOnly = model.DinnerVisibleToStaffOnly;
+                            dbEntry.DinnerCreatedDate = model.DinnerCreatedDate;
+                            dbEntry.DinnerCreatedBy = model.DinnerCreatedBy;
+                            break;
+                    }
                     dbEntry.UpdatedDate = DateTime.Now;// DateTime.UtcNow;
                     dbEntry.UpdatedBy = model.UpdatedBy;
                     context.Entry(dbEntry).State = EntityState.Modified;

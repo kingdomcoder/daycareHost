@@ -78,6 +78,22 @@ namespace Daycare.Domain.Services.Concrete {
             };
         }
 
+        public ProfileSasResult CreateProfileUploadSas(int childId, string fileName, string contentType) {
+            // M2c: profile images. Server decides the key; the "profile/" prefix matches the
+            // client read base URL (PROFILE_IMAGE_BASE_URL ends with "profile/").
+            var extension = string.IsNullOrEmpty(fileName) ? string.Empty : System.IO.Path.GetExtension(fileName);
+            var imageFileName = $"{childId}/{Guid.NewGuid():N}{extension}";
+            var blobName = $"profile/{imageFileName}";
+
+            var url = BuildPresignedUrl(blobName, HttpVerb.PUT, uploadSasMinutes, contentType);
+
+            return new ProfileSasResult {
+                BlobName = blobName,
+                UploadUrl = url,
+                ImageFileName = imageFileName
+            };
+        }
+
         public string CreateReadSasUrl(string blobName) {
             return BuildPresignedUrl(blobName, HttpVerb.GET, readSasMinutes, null);
         }

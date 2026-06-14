@@ -39,5 +39,7 @@ namespace Daycare.Domain.Services.Abstract {
         IEnumerable<ApplicationUser> GetUsersBySearchKey(ApplicationUser model);
 
         //  void updateUserConference(ApplicationUser user);
+
+        ApplicationUser GetUserByTelNo(string telNo);
     }
 }

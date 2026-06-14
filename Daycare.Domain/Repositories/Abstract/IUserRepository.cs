@@ -24,8 +24,8 @@ namespace Daycare.Domain.Repositories.Abstract {
 
             void DeleteUserById(string Id);
 
+            ApplicationUser GetUserByTelNo(string telNo);
 
-
-        }
+    }
 
 }

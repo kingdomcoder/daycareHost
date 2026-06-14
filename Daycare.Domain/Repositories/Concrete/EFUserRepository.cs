@@ -199,6 +199,17 @@ namespace Daycare.Domain.Repositories.Concrete {
 
         }
 
+        public ApplicationUser GetUserByTelNo(string telNo)
+        {
+            try
+            {
+                return context.Users.Where(x => x.TelNo == telNo).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error at GetUserByTelNo " + ex.Message);
+            }
+        }
 
     }
 

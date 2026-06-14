@@ -168,5 +168,10 @@ namespace Daycare.Domain.Services.Concrete {
             return userRepository.GetUsersBySearchKey(model);
         }
 
+        public ApplicationUser GetUserByTelNo(string telNo)
+        {
+            return userRepository.GetUserByTelNo(telNo);
+        }
+
     }
 }

@@ -172,7 +172,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                         Activity activitylog = new Activity();
                         activitylog.ChildId = model.ChildId;
                         activitylog.ActivityName = "Sign-In";
-                        activitylog.CreatedDate = attendancelog.InTime;
+                        activitylog.CreatedDate = attendancelog.InTime_StampTime;
                         activitylog.CreatedBy = attendancelog.InTime_EnteredBy;
                         logs.Add(activitylog);
                     }
@@ -190,7 +190,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                         Activity activitylog = new Activity();
                         activitylog.ChildId = model.ChildId;
                         activitylog.ActivityName = "Sing-Out";
-                        activitylog.CreatedDate = attendancelog.OutTime;
+                        activitylog.CreatedDate = attendancelog.OutTime_StampTime;
                         activitylog.CreatedBy = attendancelog.OutTime_EnteredBy;
                         logs.Add(activitylog);
                     }
@@ -530,7 +530,7 @@ namespace Daycare.Domain.Repositories.Concrete {
                 }
 
 
-
+                var tempLog = logs.OrderByDescending(x => x.CreatedDate).ToList();
 
 
                 return logs.OrderByDescending(x => x.CreatedDate);
