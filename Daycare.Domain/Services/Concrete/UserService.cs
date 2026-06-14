@@ -2,6 +2,7 @@
 using Daycare.Domain.Entities.Daycare;
 using Daycare.Domain.Repositories.Abstract;
 using Daycare.Domain.Services.Abstract;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -11,9 +12,21 @@ using System.Text;
 namespace Daycare.Domain.Services.Concrete {
     public class UserService : IUserService {
         IUserRepository userRepository;
+        private readonly IConfiguration configuration;
 
-        public UserService(IUserRepository userRepository) {
+        public UserService(IUserRepository userRepository, IConfiguration configuration) {
             this.userRepository = userRepository;
+            this.configuration = configuration;
+        }
+
+        // 設定欠落時は秘密を含まない安全なメッセージで例外を投げる（キー名のみ提示）。
+        private string RequireConfig(string key) {
+            var value = configuration[key];
+            if (string.IsNullOrWhiteSpace(value)) {
+                throw new InvalidOperationException(
+                    $"必要な設定が見つかりません（または空です）: '{key}'. appsettings.Development.json または環境変数で設定してください。");
+            }
+            return value;
         }
 
         IEnumerable<ApplicationUser> User {
@@ -34,31 +47,19 @@ namespace Daycare.Domain.Services.Concrete {
 
         public void PasswordRecoveryTokenRequest(string email, string token) {
             try {
-                //using (SmtpClient client = new SmtpClient("mail.equipper.org")) {
-                //using (SmtpClient client = new SmtpClient("smtp.emailsrvr.com")) {
-                //using (SmtpClient client = new SmtpClient("smtp.gmail.com")) {
-                //using (SmtpClient client = new SmtpClient("smtpout.secureserver.net")) {
-                //using (SmtpClient client = new SmtpClient("globalreturnees.org")) {
-                //using (SmtpClient client = new SmtpClient("smtp-relay.sendinblue.com",587)) {
-                using (SmtpClient client = new SmtpClient("m49.siteground.biz")) {
+                // SMTP 認証情報は設定から取得（実値は appsettings.Development.json / 環境変数）。
+                string host = RequireConfig("Smtp:PasswordRecovery:Host");
+                string user = RequireConfig("Smtp:PasswordRecovery:User");
+                string password = RequireConfig("Smtp:PasswordRecovery:Password");
+                string from = RequireConfig("Smtp:PasswordRecovery:From");
+                int port = int.TryParse(configuration["Smtp:PasswordRecovery:Port"], out var prPort) ? prPort : 25;
+
+                using (SmtpClient client = new SmtpClient(host, port)) {
                     client.UseDefaultCredentials = false;
-                    //client.Credentials = new NetworkCredential("ecregistration@equipper.org", "registration1997");
-                    //client.Credentials = new NetworkCredential("support@marubeni-trans.com", "01Mtssupport");
-                    //client.Credentials = new NetworkCredential("RJC2021online@gmail.com", "JesusChrist#1");
-                    //client.Credentials = new NetworkCredential("admin@rjcnetwork.org", "0ScN!TMKx$II");
-                    //client.Credentials = new NetworkCredential("info@kingdomcoders.net", "all4HisGlory!");
-                    //client.Credentials = new NetworkCredential("info@globalreturnees.org", "Ochanomizu1010062");
-                    //client.Credentials = new NetworkCredential("support@marubeni-trans.com", "DafBVvxUM9k0q81Q");
-                    client.Credentials = new NetworkCredential("info@jcfn.org", "Santaana2021");
+                    client.Credentials = new NetworkCredential(user, password);
 
                     MailMessage mailMessage = new MailMessage();
-                    //mailMessage.From = new MailAddress("ecregistration@equipper.org");
-                    //mailMessage.From = new MailAddress("support@marubeni-trans.com");
-                    //mailMessage.From = new MailAddress("RJC2021online@gmail.com");
-                    //mailMessage.From = new MailAddress("info@kingdomcoders.net");
-                    //mailMessage.From = new MailAddress("info@globalreturnees.org");
-                    //mailMessage.From = new MailAddress("support@marubeni-trans.com");
-                    mailMessage.From = new MailAddress("info@jcfn.org");
+                    mailMessage.From = new MailAddress(from);
 
                     mailMessage.To.Add(email.Trim());
                     mailMessage.Bcc.Add("oozeki@kingdomcoders.net");
@@ -100,12 +101,19 @@ namespace Daycare.Domain.Services.Concrete {
 
         public void SendErrorMessageToAdmin(ApplicationUser model, string errorMessage) {
             try {
-                using (SmtpClient client = new SmtpClient("smtpout.secureserver.net")) {
+                // 管理者アラート用 SMTP 認証情報は設定から取得（実値は appsettings.Development.json / 環境変数）。
+                string host = RequireConfig("Smtp:AdminAlert:Host");
+                string user = RequireConfig("Smtp:AdminAlert:User");
+                string password = RequireConfig("Smtp:AdminAlert:Password");
+                string from = RequireConfig("Smtp:AdminAlert:From");
+                int port = int.TryParse(configuration["Smtp:AdminAlert:Port"], out var aaPort) ? aaPort : 25;
+
+                using (SmtpClient client = new SmtpClient(host, port)) {
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("info@kingdomcoders.net", "all4HisGlory!");
+                    client.Credentials = new NetworkCredential(user, password);
                     MailMessage mailMessage = new MailMessage();
-                    mailMessage.From = new MailAddress("info@kingdomcoders.net");
-                    mailMessage.To.Add("info@kingdomcoders.net");
+                    mailMessage.From = new MailAddress(from);
+                    mailMessage.To.Add(from);
                     mailMessage.Bcc.Add("yasu_ozeki@hotmail.com");
                     mailMessage.Bcc.Add("oozeki@kingdomcoders.net");
                     mailMessage.IsBodyHtml = true;
