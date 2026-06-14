@@ -39,6 +39,28 @@ namespace Daycare.WebAPIHost.Controllers {
         #endregion
 
         [AllowAnonymous]
+        [HttpGet("telNoCheck/{telNo}")]
+        public async Task<IActionResult> TelNoCheck(string telNo)
+        {
+            try
+            {
+                if (telNo == null) { return new StatusCodeResult(500); }
+                var user = userService.GetUserByTelNo(telNo);
+                if (user == null) { return NoContent(); }
+                return Json(UserResponseViewModel.FromEntity(user), new JsonSerializerOptions {
+                    WriteIndented = true,
+                });
+
+        
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message + "GetUserProfileById failed");
+            }
+
+        }
+
+        [AllowAnonymous]
         [HttpGet("emailCheck/{email}")]
         public async Task<IActionResult> EmailCheck(string email) {
             //     try {
@@ -48,7 +70,10 @@ namespace Daycare.WebAPIHost.Controllers {
             if (user == null && email.Contains("@")) {
                 user = await UserManager.FindByEmailAsync(email);
             }
-            return Ok(user);
+            if (user == null) { return NoContent(); }
+            return Json(UserResponseViewModel.FromEntity(user), new JsonSerializerOptions {
+                WriteIndented = true,
+            });
         }
 
         [HttpGet("getUserProfile/{userName}")]
@@ -60,7 +85,7 @@ namespace Daycare.WebAPIHost.Controllers {
             if (user == null && userName.Contains("@")) {
                 user = await UserManager.FindByEmailAsync(userName);
             }
-            return Json(user, new JsonSerializerOptions {
+            return Json(UserResponseViewModel.FromEntity(user), new JsonSerializerOptions {
                 WriteIndented = true,
             });
         }
@@ -70,7 +95,7 @@ namespace Daycare.WebAPIHost.Controllers {
             try {
                 if (id == null) { return new StatusCodeResult(500); }
                 var user = userService.GetUserProfileById(id);
-                return Json(user, new JsonSerializerOptions {
+                return Json(UserResponseViewModel.FromEntity(user), new JsonSerializerOptions {
                     WriteIndented = true,
                 });
             } catch (Exception ex) {
@@ -113,7 +138,7 @@ namespace Daycare.WebAPIHost.Controllers {
              //       return Ok(newUser);
 
 
-                    return Json(newUser, new JsonSerializerOptions {
+                    return Json(UserResponseViewModel.FromEntity(newUser), new JsonSerializerOptions {
                         WriteIndented = true,
                     });
 
@@ -222,7 +247,7 @@ namespace Daycare.WebAPIHost.Controllers {
                     var newUser = userService.GetUsersBySearchKey(user).FirstOrDefault();
                     //return Ok(newUser);
 
-                    return Json(newUser, new JsonSerializerOptions {
+                    return Json(UserResponseViewModel.FromEntity(newUser), new JsonSerializerOptions {
                         WriteIndented = true,
                     });
 
@@ -287,7 +312,7 @@ namespace Daycare.WebAPIHost.Controllers {
                     var newUser = userService.GetUsersBySearchKey(user).FirstOrDefault();
                     //return Ok(newUser);
 
-                    return Json(newUser, new JsonSerializerOptions {
+                    return Json(UserResponseViewModel.FromEntity(newUser), new JsonSerializerOptions {
                         WriteIndented = true,
                     });
 
@@ -317,7 +342,7 @@ namespace Daycare.WebAPIHost.Controllers {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     userService.PasswordRecoveryTokenRequest(email, token);
                 }
-                return Ok(user);
+                return Ok(UserResponseViewModel.FromEntity(user));
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -373,7 +398,7 @@ namespace Daycare.WebAPIHost.Controllers {
             try {
                 if (model == null) { return new StatusCodeResult(500); }
                 var user = userService.GetUsersBySearchKey(model);
-                return Json(user, new JsonSerializerOptions {
+                return Json(user.Select(UserResponseViewModel.FromEntity), new JsonSerializerOptions {
                     WriteIndented = true,
                 });
             } catch (Exception ex) {
