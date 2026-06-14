@@ -1,8 +1,0 @@
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.csproj.AssemblyReference.cache
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.AssemblyInfoInputs.cache
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.AssemblyInfo.cs
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.csproj.CoreCompileInputs.cache
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.RazorAssemblyInfo.cache
-C:\Users\administrator\Documents\Visual Studio 2019\Projects\Daycare\Daycare.WebSocket.Host\obj\Debug\netcoreapp3.1\Daycare.WebSocket.Host.RazorAssemblyInfo.cs

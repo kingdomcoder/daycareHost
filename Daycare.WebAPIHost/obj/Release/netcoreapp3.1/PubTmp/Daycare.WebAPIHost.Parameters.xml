@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="touchHost" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\administrator\\Documents\\Visual\ Studio\ 2019\\Projects\\Daycare\\Daycare\.WebAPIHost\\obj\\Release\\netcoreapp3\.1\\PubTmp\\Out\\$" />
-  </parameter>
-</parameters>
