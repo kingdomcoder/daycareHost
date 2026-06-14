@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace Daycare.WebAPIHost.Controllers {
-    //  [AllowAnonymous]
+    [Authorize]
     [EnableCors("AllowAllOrigins")] // Defined in startup.cs
     [Route("api/[controller]")]
     public class PottyController:Controller {

@@ -76,6 +76,7 @@ namespace Daycare.WebAPIHost.Controllers {
             });
         }
 
+        [Authorize]
         [HttpGet("getUserProfile/{userName}")]
         public async Task<IActionResult> GetUserProfile(string userName) {
             //     try {
@@ -90,6 +91,7 @@ namespace Daycare.WebAPIHost.Controllers {
             });
         }
 
+        [Authorize]
         [HttpGet("getUserProfileById/{id}")]
         public async Task<IActionResult> GetUserProfileById(string id) {
             try {
@@ -156,7 +158,7 @@ namespace Daycare.WebAPIHost.Controllers {
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("updateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] DaycareUserViewModel model) {
             if (model == null) { return new StatusCodeResult(500); }
@@ -380,7 +382,7 @@ namespace Daycare.WebAPIHost.Controllers {
             }
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpGet("deleteUserById/{Id}")]
         public async Task<IActionResult> DeleteUserById(string Id) {
             if (Id == null) { return new StatusCodeResult(500); }
@@ -393,6 +395,7 @@ namespace Daycare.WebAPIHost.Controllers {
             }
         }
 
+        [Authorize]
         [HttpPost("getUsersBySearchKey")]
         public async Task<IActionResult> GetUsersBySearchKey([FromBody] ApplicationUser model) {
             try {

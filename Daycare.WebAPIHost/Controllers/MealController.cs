@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Daycare.WebAPIHost.Controllers {
 
-  //  [AllowAnonymous]
+    [Authorize]
     [EnableCors("AllowAllOrigins")] // Defined in startup.cs
     [Route("api/[controller]")]
     public class MealController:Controller {
@@ -73,7 +73,7 @@ namespace Daycare.WebAPIHost.Controllers {
             try {
                 if(model == null) { return new StatusCodeResult(500); }
                 MealRecord obj = new MealRecord();
-              //  obj.MealRecordId = model.mealRecordId ?? 0;
+                obj.MealType = model.mealType;
                 obj.ChildId = model.childId;
                 obj.Parent1Id = model.parent1Id;
                 obj.Parent2Id = model.parent2Id;

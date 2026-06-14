@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Daycare.WebAPIHost.Controllers {
+    [Authorize]
     [EnableCors("AllowAllOrigins")] // Defined in startup.cs
     [Route("api/[controller]")]
     public class ChatController:Controller {

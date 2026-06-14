@@ -58,3 +58,7 @@ ScaffoldingReadMe.txt
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local secrets / environment overrides (contain real connection strings, keys, etc.)
+appsettings.Development.json
+**/appsettings.Development.json
