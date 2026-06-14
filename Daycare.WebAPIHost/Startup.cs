@@ -37,15 +37,21 @@ namespace Daycare.WebAPIHost {
             services.AddControllers();
 
             /*********** My Addition *************/
-            // 1. EntityFramework support for Sqlserver
-            services.AddEntityFrameworkSqlServer();
+            // 1. EntityFramework support for PostgreSQL (M2: SQL Server -> Postgres migration)
+            //    Npgsql は DateTime(Kind=Unspecified/Local) を timestamptz へ書こうとすると例外を投げる。
+            //    既存コードは DateTime.Now / DateTime.Today を多用しているため、レガシー挙動を有効化し
+            //    DateTime を timestamp(without time zone) にマップして書き込み時の Kind 検証を回避する。
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            // 2. Db Connection
+            // 2. Db Connection (PostgreSQL)
+            //    旧: services.AddEntityFrameworkSqlServer(); + UseSqlServer(...) — Azure SQL 用に温存（コメント）
             services.AddDbContext<MyDbContext>(myOption =>
-            myOption.UseSqlServer(Configuration.GetConnectionString("myConnection")));
+            myOption.UseNpgsql(Configuration.GetConnectionString("myConnection"),
+                npg => npg.MigrationsAssembly("Daycare.WebAPIHost")));
 
             services.AddDbContext<MyUserDbContext>(myOption =>
-            myOption.UseSqlServer(Configuration.GetConnectionString("myConnection")));
+            myOption.UseNpgsql(Configuration.GetConnectionString("myConnection"),
+                npg => npg.MigrationsAssembly("Daycare.WebAPIHost")));
 
             // 3. ASP.NET Identity support
             services.AddIdentity<ApplicationUser, IdentityRole>(
