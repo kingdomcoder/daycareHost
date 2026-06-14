@@ -91,7 +91,10 @@ namespace Daycare.WebAPIHost {
 
             services.AddTransient<IPhotoService, PhotoService>();
             services.AddTransient<IPhotoRepository, EFPhotoRepository>();
-            services.AddTransient<IPhotoStorageService, PhotoStorageService>();
+            // M2: 写真ストレージを Azure Blob -> AWS S3 へ切替。
+            // Azure 実装(PhotoStorageService)は参照用に残してあるが DI 登録は S3 実装に差し替え。
+            // ロールバックする場合は下行を PhotoStorageService に戻すだけでよい。
+            services.AddTransient<IPhotoStorageService, S3PhotoStorageService>();
 
 
             // 5. CORS — localhost(Flutter web dev) と Azure 本番の両方を許可
