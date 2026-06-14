@@ -80,12 +80,22 @@ namespace Daycare.WebAPIHost {
             services.AddTransient<IChatService,ChatService>();
             services.AddTransient<IChatRepository,EFChatRepository>();
 
+            services.AddTransient<IDeviceTokenService, DeviceTokenService>();
+            services.AddTransient<IDeviceTokenRepository, EFDeviceTokenRepository>();
 
-            // 5. CORS
+            services.AddTransient<IPhotoService, PhotoService>();
+            services.AddTransient<IPhotoRepository, EFPhotoRepository>();
+            services.AddTransient<IPhotoStorageService, PhotoStorageService>();
+
+
+            // 5. CORS — localhost(Flutter web dev) と Azure 本番の両方を許可
             services.AddCors(options => {
                 options.AddPolicy("AllowAllOrigins",
                     builder => {
-                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                        builder
+                            .SetIsOriginAllowed(_ => true)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                     });
             });
 
@@ -125,25 +135,22 @@ namespace Daycare.WebAPIHost {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            if (!env.IsDevelopment()) {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // my addition
-            app.UseAuthentication();    // my addition
-
-
+            // CORS は UseRouting の直後・UseAuthentication の前に配置する必要がある
+            app.UseCors("AllowAllOrigins");
+            app.UseAuthentication();
             app.UseAuthorization();
 
-
-
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors("AllowAllOrigins");
             });
-
-            app.UseRouting();
             var wsOptions = new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(120) };
             app.UseWebSockets(wsOptions);
-            app.Use(async (context,next) => {
+            app.Use(async (HttpContext context, RequestDelegate next) => {
                 if(context.Request.Path == "/send") {
                     if(context.WebSockets.IsWebSocketRequest) {
                         using(WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync()) {
@@ -152,6 +159,8 @@ namespace Daycare.WebAPIHost {
                     } else {
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     }
+                } else {
+                    await next(context);
                 }
             });
             
