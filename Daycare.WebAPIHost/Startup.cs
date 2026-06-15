@@ -10,6 +10,7 @@ using Daycare.Domain.Repositories.Abstract;
 using Daycare.Domain.Repositories.Concrete;
 using Daycare.Domain.Services.Abstract;
 using Daycare.Domain.Services.Concrete;
+using Daycare.WebAPIHost.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,10 @@ namespace Daycare.WebAPIHost {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+
+            // M3: Real-time chat. SignalR ships with the ASP.NET Core shared framework
+            // (Microsoft.NET.Sdk.Web), so no extra NuGet package is required on net8.0.
+            services.AddSignalR();
 
             /*********** My Addition *************/
             // 1. EntityFramework support for PostgreSQL (M2: SQL Server -> Postgres migration)
@@ -104,7 +109,11 @@ namespace Daycare.WebAPIHost {
                         builder
                             .SetIsOriginAllowed(_ => true)
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            // M3: SignalR browser clients send credentials during /negotiate.
+                            // AllowCredentials is incompatible with AllowAnyOrigin but valid with
+                            // SetIsOriginAllowed (which echoes the specific Origin back).
+                            .AllowCredentials();
                     });
             });
 
@@ -156,6 +165,8 @@ namespace Daycare.WebAPIHost {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers().RequireCors("AllowAllOrigins");
+                // M3: real-time chat hub. Front-end SIGNALR_HUB_URL = <API CloudFront>/chatHub.
+                endpoints.MapHub<ChatHub>("/chatHub").RequireCors("AllowAllOrigins");
             });
             var wsOptions = new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(120) };
             app.UseWebSockets(wsOptions);

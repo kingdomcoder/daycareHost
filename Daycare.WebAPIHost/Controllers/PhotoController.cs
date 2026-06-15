@@ -239,6 +239,50 @@ namespace Daycare.WebAPIHost.Controllers {
             }
         }
 
+        // M3 (Task 2, Option A): serve a child's PROFILE image while the S3 bucket stays FULLY PRIVATE.
+        //
+        // Why this endpoint exists: the bucket has all public access blocked (no public policy), so the
+        // old "PROFILE_IMAGE_BASE_URL + imageFileName" direct-S3 read returns 403. Child gallery photos
+        // already solve this with server-issued presigned GET URLs (getPhotosByChild). Profile images are
+        // displayed by plain Image.network in ~13 places that cannot attach an Authorization header, so we
+        // expose an ANONYMOUS endpoint that issues a short-lived presigned GET and 302-redirects to it.
+        //   Front-end PROFILE_IMAGE_BASE_URL = <API CloudFront>/api/photo/profile/   (trailing slash).
+        //   Request URL = base + Child.ImageFileName ("{childId}/{GUID:N}{.ext}").
+        //
+        // Privacy guarantee for CHILD PHOTOS (must remain private):
+        //   - The presigned key is hard-coded to the "profile/" prefix: key = "profile/" + imageFileName.
+        //     Child gallery photos live under "{org}/{child}/..." (NO "profile/" prefix), so this endpoint
+        //     can NEVER mint a read URL for a gallery photo.
+        //   - imageFileName is validated to the exact server-decided shape "{childId}/{32-hex GUID}{.ext}"
+        //     (see S3PhotoStorageService.CreateProfileUploadSas), rejecting "..", extra segments, and any
+        //     attempt to break out of the profile/ prefix.
+        //   - Anonymous read is behavior-compatible with the previous Azure deployment, where profile
+        //     image URLs were public. Profile keys are random GUIDs (not enumerable) and the bucket stays
+        //     non-public/non-listable.
+        [AllowAnonymous]
+        [HttpGet("profile/{childId:int}/{fileName}")]
+        public IActionResult GetProfileImage(int childId, string fileName) {
+            // Reconstruct the imageFileName the client appended to the base URL and validate strictly.
+            var imageFileName = $"{childId}/{fileName}";
+            if (!ProfileImageFileNameFormat.IsMatch(imageFileName)) {
+                return BadRequest("Invalid profile image path");
+            }
+
+            try {
+                // Hard-pin the "profile/" prefix; this is the ONLY prefix this endpoint can ever read.
+                var blobName = $"profile/{imageFileName}";
+                var url = photoStorageService.CreateReadSasUrl(blobName);
+                // 302 to the short-lived presigned GET. The browser follows it; the bucket stays private.
+                return Redirect(url);
+            } catch (Exception) {
+                return StatusCode(500);
+            }
+        }
+
+        // Profile key shape (without the "profile/" prefix): "{childId}/{GUID:N}{.ext}".
+        private static readonly Regex ProfileImageFileNameFormat =
+            new Regex(@"^\d+/[0-9a-fA-F]{32}(\.[A-Za-z0-9]+)?$", RegexOptions.Compiled);
+
         private string GetUserId() {
             // The JWT "sub" claim carries ApplicationUser.Id (see TokenController).
             return User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
